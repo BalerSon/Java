@@ -1,15 +1,24 @@
 public class Main {
     public static void main(String[] args) {
-        if(args.length > 0 && ("--help".equals(args[0]) || "-h".equals(args[0]))) {
+        if(hasFlag(args, "-h") || hasFlag(args, "-help")) {
             printHelp();
             return;
         }
-        if(args.length > 0 && "-i".equals(args[0])) {
+        if(hasFlag(args, "-i")) {
             InteractiveMode.dialogue();
         }
         else {
             NonInteractiveMode.run();
         }
+    }
+
+    private static boolean hasFlag(String[] args, String flag) {
+        for(String arg : args) {
+            if(flag.equals(arg)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void printHelp() {
