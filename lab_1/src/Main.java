@@ -8,7 +8,7 @@ public class Main {
             InteractiveMode.dialogue();
         }
         else {
-            NonInteractiveMode.run();
+            NonInteractiveMode.run(args);
         }
     }
 
