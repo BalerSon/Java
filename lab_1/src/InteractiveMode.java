@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.crypto.digests.SHAKEDigest;
 
 public class InteractiveMode {
     public static void dialogue() {
@@ -15,7 +16,7 @@ public class InteractiveMode {
             System.out.println("2) SHA-256");
             System.out.println("3) BLAKE2s-256");
             System.out.println("4) BLAKE2b-256");
-            System.out.println("5) SHAKE-256");
+            System.out.println("5) SHAKE256");
             System.out.print("Enter the algorithm number or 0 to quit: ");
 
             String algoNum = scanner.nextLine();
@@ -30,23 +31,23 @@ public class InteractiveMode {
 
             switch(algoNum) {
                 case "1":
-                    algorithm = ALG_MD5;
+                    algorithm = "MD5";
                     provider = "Standard";
                     break;
                 case "2":
-                    algorithm = ALG_SHA256;
+                    algorithm = "SHA-256";
                     provider = "Standard";
                     break;
                 case "3":
-                    algorithm = ALG_BLAKE2s;
+                    algorithm = "BLAKE2s-256";
                     provider = "BC";
                     break;
                 case "4":
-                    algorithm = ALG_BLAKE2b;
+                    algorithm = "BLAKE2b-256";
                     provider = "BC";
                     break;
                 case "5":
-                    algorithm = ALG_SHAKE256;
+                    algorithm = "SHAKE256";
                     provider = "BC";
                     System.out.print("Enter the output length multiply of 8 (256 default): ");
                     String length = scanner.nextLine();
@@ -65,7 +66,7 @@ public class InteractiveMode {
                     break;
                 default:
                     System.out.println("There is no algorithm with such number. MD5 is default.");
-                    algorithm = ALG_MD5;
+                    algorithm = "MD5";
                     provider = "Standard";
             }
 
@@ -78,9 +79,13 @@ public class InteractiveMode {
                     continue;
                 }
 
-                String hash = calculateHash(file, algorithm, provider, outputLength);
-                System.out.println("Your hash: ");
-                System.out.println(hash);
+                String hash;
+                if ("SHAKE256".equals(algorithm)) {
+                    hash = calculateShakeHash(file, outputLength);
+                } else {
+                    hash = calculateHash(file, algorithm, provider);
+                }
+                System.out.println("Your hash: " + hash);
             } catch(Exception e) {
                 System.out.println("Invalid file " + e.getMessage());
             }
@@ -95,7 +100,7 @@ public class InteractiveMode {
         scanner.close();
     }
 
-    private static String calculateHash(File file, String algorithm, String provider, int length) throws Exception{
+    private static String calculateHash(File file, String algorithm, String provider) throws Exception{
         MessageDigest digest;
         if ("BC".equals(provider)) {
             digest = MessageDigest.getInstance(algorithm, "BC");
@@ -109,12 +114,23 @@ public class InteractiveMode {
             while ((bytesRead = fis.read(buffer)) > 0) {
                 digest.update(buffer, 0, bytesRead);
             }
-            byte[] bytesHash;
-            if ("ALG_SHAKE256".equals(algorithm)) {
-                bytesHash = digest.digest(new byte[length / 8]);
-            } else {
-                bytesHash = digest.digest();
+            byte[] bytesHash = digest.digest();
+            return bytesToHex(bytesHash);
+        }
+    }
+
+    private static String calculateShakeHash(File file, int length) throws Exception {
+        SHAKEDigest shake = new SHAKEDigest(256);
+        int bytesRead;
+        byte[] buffer = new byte[8192];
+
+        try (FileInputStream fis = new FileInputStream(file)){
+            while ((bytesRead = fis.read(buffer)) > 0) {
+                shake.update(buffer, 0, bytesRead);
             }
+            int newLength = length / 8;
+            byte[] bytesHash = new byte[newLength];
+            shake.doOutput(bytesHash, 0, newLength);
             return bytesToHex(bytesHash);
         }
     }
@@ -126,10 +142,4 @@ public class InteractiveMode {
         }
         return result.toString();
     }
-
-    private static final String ALG_MD5 = "MD5";
-    private static final String ALG_SHA256 = "SHA-256";
-    private static final String ALG_BLAKE2b = "BLAKE2b-256";
-    private static final String ALG_BLAKE2s = "BLAKE2s-256";
-    private static final String ALG_SHAKE256 = "SHAKE256";
 }
