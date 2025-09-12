@@ -86,7 +86,7 @@ public class InteractiveMode {
                     hash = calculateHash(file, algorithm, provider);
                 }
                 System.out.println("Your hash: " + hash);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println("Invalid file " + e.getMessage());
             }
 

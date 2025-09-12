@@ -13,7 +13,7 @@ public class NonInteractiveMode {
         int shakeLength = 256;
         String algorithm = null;
         String provider = "Standard";
-        List<String> fileNames = new ArrayList();
+        List<String> fileNames = new ArrayList<>();
 
         for (int i = 0; i < args.length; ++i) {
             switch (args[i]) {
