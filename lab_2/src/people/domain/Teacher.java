@@ -1,8 +1,8 @@
 package src.people.domain;
 
 public class Teacher extends Person {
-    private Subject subject;
-    private int workloadHours;
+    private final Subject subject;
+    private final int workloadHours;
 
     public Teacher(String fullName, String phone, int birthYear, Subject subject, int workloadHours) {
         if (workloadHours < 0) {
