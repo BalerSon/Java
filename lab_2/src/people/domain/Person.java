@@ -1,6 +1,18 @@
 package src.people.domain;
 
 import java.util.UUID;
+import src.people.util.IdGenerator;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+
+@JsonTypeInfo (
+    use = JsonTypeInfo.Id.NAME,
+    property = "type"
+)
+@JsonSubTypes ({
+    @JsonSubTypes.Type(value = Teacher.class, name = "teacher"),
+    @JsonSubTypes.Type(value = Student.class, name = "student")
+})
 
 public abstract class Person {
     private final String fullName;
@@ -9,19 +21,9 @@ public abstract class Person {
     private final int birthYear;
 
     protected Person(String fullName, String phone, int birthYear) {
-        if (fullName == null || fullName.isBlank()) {
-            throw new IllegalArgumentsException("Incorrect fullName! It can't be blank!");
-        }
-        if (phone == null || phone.isBlank()) {
-            throw new IllegalArgumentsException("Incorrect phone! It can't be blank!");
-        }
-        if (birthYear < 1900 || birthYear > java.time.Year.now().getValue()) {
-            throw new IllegalArgumentsException("Incorrect birthDate, elder!");
-        }
-
         this.fullName = fullName;
         this.phone = phone;
-        this.id = UUID.randomUUID().toString();
+        this.id = IdGenerator.generateId();
         this.birthYear = birthYear;
     }
 

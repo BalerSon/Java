@@ -5,10 +5,6 @@ public class Teacher extends Person {
     private final int workloadHours;
 
     public Teacher(String fullName, String phone, int birthYear, Subject subject, int workloadHours) {
-        if (workloadHours < 0) {
-            throw new IllegalArgumentException("Workload hours cannot be negative");
-        }
-
         super(fullName, phone, birthYear);
         this.subject = subject;
         this.workloadHours = workloadHours;
