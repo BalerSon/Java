@@ -1,7 +1,9 @@
 package src.people.domain;
 
-import java.util.UUID;
 import src.people.util.IdGenerator;
+
+import java.util.UUID;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 
@@ -17,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 public abstract class Person {
     private final String fullName;
     private final String phone;
-    private final String id;
+    private String id;
     private final int birthYear;
 
     protected Person(String fullName, String phone, int birthYear) {
@@ -40,12 +42,16 @@ public abstract class Person {
         return birthYear;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         return (o instanceof Person) && ((Person) o).id.equals(this.id);
     }
     @Override
-    public boolean hashCode() {
+    public int hashCode() {
         return Objects.hash(id);
     }
 }

@@ -5,21 +5,27 @@ import src.people.util.*;
 
 import java.nio.file.*;
 import java.util.Optional;
+import java.io.IOException;
 
 public class FilePeopleDao implements PeopleDao {
     private final Path storageDir;
 
     public FilePeopleDao(String storageDir) {
-        this.storageDir = Paths.get(storageDir);
-        Files.createDirectories(this.storageDir);
+        try {
+            this.storageDir = Paths.get(storageDir);
+            Files.createDirectories(this.storageDir);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create storage directory: " + storageDir, e);
+        }
     }
 
     @Override
     public String create(Person p) {
         try {
-            Validation.validate(p);
+            Validation.validatePerson(p);
+            String id = p.getId();
 
-            if (p.getId() == null || p.getId().trim().isEmpty()) {
+            if (id == null || id.trim().isEmpty()) {
                 throw new IllegalArgumentException("ID is invalid");
             }
 
@@ -50,11 +56,11 @@ public class FilePeopleDao implements PeopleDao {
 
             String json = Files.readString(filePath);
 
-            Person p = JsonUtil.fromJson();
+            Person p = JsonUtil.fromJson(json, Person.class);
 
             return Optional.of(p);
-        } catch (Esception e) {
-            throw new RuntimeException("Failed to find person with id: " + id);
+        } catch (Exception e) {
+            System.out.println("Failed to find person with id: " + id + ": " + e.getMessage());
             return Optional.empty();
         }
     }
@@ -82,7 +88,7 @@ public class FilePeopleDao implements PeopleDao {
     @Override
     public boolean delete(String id) {
         try {
-            if ( if id == null || id.trim().isEmpty()){
+            if (id == null || id.trim().isEmpty()) {
                 return false;
             }
 

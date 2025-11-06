@@ -2,6 +2,8 @@ package src.people.domain;
 
 import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 
 public class Student extends Person {
@@ -10,8 +12,10 @@ public class Student extends Person {
 
     public Student(String fullName, String phone, int birthYear, List<Subject> subjects, Map<Subject, Double> averageGrades) {
         super(fullName, phone, birthYear);
-        this.subjects = List.copyOf(new LinkedHashSet<>(subjects));
-        this.averageGrades = List.copyOf(averageGrades);
+        this.subjects = subjects != null ?
+                new ArrayList<>(subjects) : new ArrayList<>();
+        this.averageGrades = averageGrades != null ?
+                new HashMap<>(averageGrades) : new HashMap<>();
     }
 
     public List<Subject> getSubjects() {

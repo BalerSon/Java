@@ -2,6 +2,7 @@ package src.people.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class JsonUtil {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -12,14 +13,14 @@ public class JsonUtil {
     }
 
     public static String toJson(Object object) throws JsonProcessingException{
-        objectMapper.writeValueAsString(object);
+        return objectMapper.writeValueAsString(object);
     }
 
     public static <T> T fromJson(String json, Class<T> clazz) throws JsonProcessingException{
-        objectMapper.readValue(json, clazz);
+        return objectMapper.readValue(json, clazz);
     }
 
     public static String toPrettyJson(Object object) throws JsonProcessingException{
-        objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
     }
 }
