@@ -1,0 +1,10 @@
+{
+  "op": "CreateTeacher",
+  "payload": {
+    "fullName": "Пётр Петрович",
+    "birthYear": 1980,
+    "phone": "+79991234567",
+    "subject": "CHEMISTRY",
+    "workloadHours": 150
+  }
+}

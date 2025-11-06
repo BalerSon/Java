@@ -1,0 +1,10 @@
+{
+  "op": "CreateTeacher",
+  "payload": {
+    "fullName": "Иванов Иван Иванович",
+    "birthYear": 1980,
+    "phone": "+79991234567",
+    "subject": "MATH",
+    "workloadHours": 150
+  }
+}

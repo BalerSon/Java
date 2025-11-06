@@ -1,6 +1,7 @@
 package src.people.control;
 
-import people.util.JsonUtil;
+import src.people.util.JsonUtil;
+
 import java.nio.file.*;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
@@ -28,7 +29,7 @@ public class Controller implements Runnable {
 
         while (running) {
             try {
-                scanCommandsFoldedr();
+                scanCommandsFolder();
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 System.out.println("Controller thread interrupted");
@@ -73,7 +74,7 @@ public class Controller implements Runnable {
         }
     }
 
-    private boolean isValid(Command command) {
+    private boolean isValidCommand(Command command) {
         if (command == null || command.getOp() == null || command.getPayload() == null) {
             return false;
         }

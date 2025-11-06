@@ -78,7 +78,7 @@ public class PeopleService {
         Map<Subject, Double> newGrades = averageGrades != null ? averageGrades : currentStudent.getAverageGrades();
 
         if (newSubjects.isEmpty()) {
-            throw new IllegalArgumentException("Ученик должен изучать хотя бы один предмет");
+            throw new IllegalArgumentException("Student with id " + id + " has no subjects");
         }
 
         Student updatedStudent = new Student(newFullName, newPhone, newBirthYear, newSubjects, newGrades);

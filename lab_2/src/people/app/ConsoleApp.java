@@ -1,15 +1,15 @@
 package people.app;
 
-import people.dao.*;
-import people.service.PeopleService;
-import people.control.*;
+import src.people.dao.*;
+import src.people.service.PeopleService;
+import src.people.control.*;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class ConsoleApp {
     public static void main(String[] args) {
         try {
-            // Парсим аргументы командной строки
             String storageDir = "./storage";
             String commandsDir = "./commands";
             boolean useCache = true;
@@ -22,20 +22,17 @@ public class ConsoleApp {
                 }
             }
 
-            System.out.println("🚀 Запуск системы...");
-            System.out.println("📁 Хранилище: " + storageDir);
-            System.out.println("📁 Команды: " + commandsDir);
-            System.out.println("⚡ Кэш: " + (useCache ? "включен" : "выключен"));
+            System.out.println("Starting system...");
+            System.out.println("Storage: " + storageDir);
+            System.out.println("Commands: " + commandsDir);
+            System.out.println("Cache: " + (useCache ? "enabled" : "disabled"));
 
-            // Инициализируем систему
             PeopleDao fileDao = new FilePeopleDao(storageDir);
             PeopleDao dao = useCache ? new CachedPeopleDao(fileDao) : fileDao;
             PeopleService service = new PeopleService(dao);
 
-            // Создаем очередь команд
             BlockingQueue<Command> commandQueue = new ArrayBlockingQueue<>(100);
 
-            // Запускаем контроллер и диспетчер в отдельных потоках
             Controller controller = new Controller(commandsDir, commandQueue);
             Dispatcher dispatcher = new Dispatcher(commandQueue, service);
 
@@ -45,15 +42,14 @@ public class ConsoleApp {
             controllerThread.start();
             dispatcherThread.start();
 
-            System.out.println("🎉 Система запущена! Ожидаю команды в папке: " + commandsDir);
-            System.out.println("⏹️ Для остановки нажмите Ctrl+C");
+            System.out.println("System started! Waiting for commands in folder: " + commandsDir);
+            System.out.println("Press Ctrl+C to stop");
 
-            // Ждем завершения потоков
             controllerThread.join();
             dispatcherThread.join();
 
         } catch (Exception e) {
-            System.err.println("❌ Критическая ошибка: " + e.getMessage());
+            System.err.println("Critical error: " + e.getMessage());
             e.printStackTrace();
         }
     }
