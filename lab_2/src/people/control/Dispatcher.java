@@ -2,6 +2,7 @@ package src.people.control;
 
 import src.people.service.PeopleService;
 import src.people.domain.Subject;
+import src.people.util.JsonUtil;
 
 import java.util.Map;
 import java.util.List;
@@ -148,9 +149,16 @@ public class Dispatcher implements Runnable {
         String id = (String) payload.get("id");
         var person = peopleService.getById(id);
         if (person.isPresent()) {
-            System.out.println("Found person with id: " + id);
+            try {
+                System.out.println("=== FOUND PERSON ===");
+                String json = JsonUtil.toPrettyJson(person.get());
+                System.out.println(json);
+                System.out.println("====================");
+            } catch (Exception e) {
+                System.out.println("Found person with id: " + id + " (but failed to serialize)");
+            }
         } else {
-            System.out.println("Failed to find person with id: " + id);
+            System.out.println("Person with id: " + id + " not found");
         }
     }
 

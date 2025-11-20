@@ -6,6 +6,8 @@ import java.util.UUID;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonTypeInfo (
     use = JsonTypeInfo.Id.NAME,
@@ -26,6 +28,18 @@ public abstract class Person {
         this.fullName = fullName;
         this.phone = phone;
         this.id = IdGenerator.generateId();
+        this.birthYear = birthYear;
+    }
+
+    @JsonCreator
+    protected Person(
+            @JsonProperty("id") String id,
+            @JsonProperty("fullName") String fullName,
+            @JsonProperty("phone") String phone,
+            @JsonProperty("birthYear") int birthYear) {
+        this.fullName = fullName;
+        this.phone = phone;
+        this.id = id != null ? id : IdGenerator.generateId();
         this.birthYear = birthYear;
     }
 
